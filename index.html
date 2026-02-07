@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>🇲🇫 Macron Clicker 🇲🇫</title>
+    <style>
+        body { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); font-family: 'Comic Sans MS', cursive; text-align: center; color: #fff; position: relative; }
+        #cookie { 
+            width: 250px; height: 250px; cursor: pointer; border-radius: 50%; transition: all 0.2s; 
+            border: none !important; outline: none !important; box-shadow: none !important; background: transparent; 
+        }
+        #cookie:focus, #cookie:active { outline: none !important; border: none !important; box-shadow: none !important; }
+        #cookie:hover { transform: scale(1.15) rotate(5deg); box-shadow: 0 0 50px gold; }
+        #cookie:active { transform: scale(0.9); }
+        .upgrade { margin: 15px; padding: 20px; background: rgba(255,255,255,0.2); border: 4px solid #ffd700; border-radius: 20px; cursor: pointer; font-size: 22px; font-weight: bold; }
+        .upgrade:hover:not(:disabled) { background: rgba(255,215,0,0.5); transform: scale(1.05); }
+        .upgrade:disabled { opacity: 0.4; cursor: no-drop; }
+        .upgrade img { vertical-align: middle; margin-right: 10px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
+        #count { font-size: 60px; margin: 20px; text-shadow: 3px 3px 0 #000; }
+        #cps { font-size: 35px; color: gold; text-shadow: 2px 2px 0 #000; }
+        #pauseBtn { position: fixed; top: 20px; left: 20px; padding: 15px 25px; background: #ff4500; color: white; border: none; border-radius: 50px; font-size: 20px; cursor: pointer; font-weight: bold; z-index: 10; }
+        #pauseBtn:hover { background: #ff6347; transform: scale(1.1); }
+        #pauseMenu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; z-index: 20; justify-content: center; align-items: center; flex-direction: column; }
+        .menuBtn { margin: 10px; padding: 20px 40px; background: #4ecdc4; color: white; border: none; border-radius: 20px; font-size: 24px; font-weight: bold; cursor: pointer; }
+        .menuBtn:hover { background: #45b7aa; transform: scale(1.05); }
+        #importFile { display: none; }
+        .achievement { position: fixed; top: 20px; right: 20px; background: green; color: white; padding: 20px; border-radius: 10px; display: none; font-size: 24px; animation: pop 0.5s; z-index: 15; }
+        @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+    <h1>🇲🇫 Macron Clicker 🇲🇫</h1>
+    <div id="count">0 € impôts</div>
+    <div id="cps">0 € impôts/sec</div>
+    <img id="cookie" src="https://media.gettyimages.com/id/2223674712/fr/photo/topshot-frances-president-emmanuel-macron-and-his-wife-brigitte-macron-attend-a-ceremony.jpg?s=612x612&w=0&k=20&c=QMeUPPP2Dcq9G8P2hGi19-_tsflQ7pzH4omGVB-QWa0=" alt="Clique moi">
+
+    <!-- ZONE UPGRADES -->
+  <div id="upgrades">
+    <!-- Celui-là reste visible dès le début -->
+    <div class="upgrade" id="curseur" onclick="buyUpgrade('curseur')">
+        <img src="https://img.icons8.com/ios-filled/50/000000/mouse.png" alt="Curseur" style="width:40px; height:40px; vertical-align:middle; margin-right:10px;">
+        Marine Le Pen (10 € impôts) - <span id="curseurCount">0</span>
+    </div>
+
+    <!-- Les autres cachés au départ -->
+    <div class="upgrade" id="mamie" onclick="buyUpgrade('mamie')" style="display:none;">
+        <img src="https://img.icons8.com/ios-filled/50/000000/grandmother.png" alt="Bardella" style="width:40px; height:40px; vertical-align:middle; margin-right:10px;">
+        Jordan Bardella (80 € impôts) - <span id="mamieCount">0</span>
+    </div>
+
+    <div class="upgrade" id="ferme" onclick="buyUpgrade('ferme')" style="display:none;">
+        <img src="https://img.icons8.com/ios-filled/50/000000/farm.png" alt="Zemmour" style="width:40px; height:40px; vertical-align:middle; margin-right:10px;">
+        Eric Zemmour (1000 € impôts) - <span id="fermeCount">0</span>
+    </div>
+
+    <div class="upgrade" id="usine" onclick="buyUpgrade('usine')" style="display:none;">
+        <img src="https://img.icons8.com/ios-filled/50/000000/factory.png" alt="Gouv" style="width:40px; height:40px; vertical-align:middle; margin-right:10px;">
+        Gouvernement de merde (12000 € impôts) - <span id="usineCount">0</span>
+    </div>
+
+    <div class="upgrade" id="influenceur" onclick="buyUpgrade('influenceur')" style="display:none;">
+        <img src="https://img.icons8.com/ios-filled/50/000000/influencer.png" alt="Influenceur" style="width:40px; height:40px; vertical-align:middle; margin-right:10px;">
+        Influenceur (30000 € impôts) - <span id="influenceurCount">0</span>
+    </div>
+
+    <!-- Tes nouveaux si tu les as ajoutés -->
+    <div class="upgrade" id="etat" onclick="buyUpgrade('etat')" style="display:none;">
+        <img src="https://img.icons8.com/ios-filled/50/000000/france.png" alt="État" style="width:40px; height:40px; vertical-align:middle; margin-right:10px;">
+        État Français (100000 € impôts) - <span id="etatCount">0</span>
+    </div>
+
+    <div class="upgrade" id="peuple" onclick="buyUpgrade('peuple')" style="display:none;">
+        <img src="https://img.icons8.com/ios-filled/50/000000/french-flag.png" alt="Peuple" style="width:40px; height:40px; vertical-align:middle; margin-right:10px;">
+        Peuple Français (250000 € impôts) - <span id="peupleCount">0</span>
+    </div>
+
+    <div class="upgrade" id="macron" onclick="buyUpgrade('macron')" style="display:none;">
+        <img src="https://img.icons8.com/ios-filled/50/000000/president.png" alt="Macron" style="width:40px; height:40px; vertical-align:middle; margin-right:10px;">
+        Macron (1000000 € impôts) - <span id="macronCount">0</span>
+    </div>
+
+
+    </div>
+
+    <!-- Bouton Pause -->
+    <button id="pauseBtn" onclick="togglePause()">⏸️ PAUSE</button>
+
+    <!-- Menu Pause -->
+    <div id="pauseMenu">
+        <h2 style="color: gold; font-size: 40px; margin-bottom: 30px;">MENU PAUSE</h2>
+        <button class="menuBtn" onclick="exportSave()">📤 Exporter Save</button>
+        <label for="importFile" class="menuBtn" style="cursor: pointer;">📥 Importer Save</label>
+        <input type="file" id="importFile" accept=".txt,.json" onchange="importSave(event)">
+        <button class="menuBtn" onclick="deleteSave()">🗑️ Supprimer Save</button>
+        <button class="menuBtn" onclick="togglePause()" style="background: #ff4500;">▶️ Reprendre</button>
+    </div>
+
+    <div id="achievement" class="achievement"></div>
+
+      <script>
+
+/* ======================
+   AUDIO
+====================== */
+const macronSound = new Audio("for-sure-macron.mp3");
+macronSound.volume = 0.8;
+macronSound.preload = "auto";
+
+/* ======================
+   VARIABLES PRINCIPALES
+====================== */
+let cookies = 0;
+let cps = 0;
+let isPaused = false;
+let lastSound = 0;
+
+/* ======================
+   UPGRADES
+====================== */
+let upgrades = {
+    curseur: { count: 0, cost: 10, cps: 0.2, name: 'Marine Le Pen' },
+    mamie: { count: 0, cost: 80, cps: 1.5, name: 'Jordan Bardella' },
+    ferme: { count: 0, cost: 1000, cps: 10, name: 'Eric Zemmour' },
+    usine: { count: 0, cost: 12000, cps: 50, name: 'Gouvernement' },
+    influenceur: { count: 0, cost: 30000, cps: 100, name: 'Influenceur' },
+    etat: { count: 0, cost: 100000, cps: 400, name: 'État Français' },
+    peuple: { count: 0, cost: 250000, cps: 1200, name: 'Peuple Français' },
+    macron: { count: 0, cost: 1000000, cps: 5000, name: 'Macron' }
+};
+
+/* ======================
+   ACHIEVEMENTS
+====================== */
+function showAchievement(text) {
+    const el = document.getElementById('achievement');
+    el.innerText = text;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 2500);
+}
+
+/* ======================
+   CLICK COOKIE
+====================== */
+function clickCookie() {
+    if (isPaused) return;
+
+    cookies += 1;
+
+    const now = Date.now();
+    if (now - lastSound > 120) {
+        macronSound.currentTime = 0;
+        macronSound.play().catch(()=>{});
+        lastSound = now;
+    }
+
+    updateDisplay();
+}
+
+/* ======================
+   UPDATE DISPLAY
+====================== */
+function updateDisplay() {
+    document.getElementById('count').innerHTML =
+        Math.floor(cookies).toLocaleString() + ' € impôts';
+
+    document.getElementById('cps').innerHTML =
+        (isPaused ? 'PAUSE' : cps.toFixed(1)) + ' € impôts/sec';
+
+    for (let key in upgrades) {
+        const up = upgrades[key];
+        const el = document.getElementById(key);
+        if (!el) continue;
+
+        el.innerHTML =
+            `${up.name} (${Math.floor(up.cost).toLocaleString()} € impôts) - <span id="${key}Count">${up.count}</span>`;
+
+        el.style.opacity = cookies < up.cost ? "0.4" : "1";
+        el.style.pointerEvents = cookies < up.cost ? "none" : "auto";
+    }
+
+    // Déblocage progressif
+    if (cookies >= 50) mamie.style.display = 'block';
+    if (cookies >= 500) ferme.style.display = 'block';
+    if (cookies >= 5000) usine.style.display = 'block';
+    if (cookies >= 20000) influenceur.style.display = 'block';
+    if (cookies >= 80000) etat.style.display = 'block';
+    if (cookies >= 200000) peuple.style.display = 'block';
+    if (cookies >= 500000) macron.style.display = 'block';
+
+    saveGame();
+}
+
+/* ======================
+   BUY UPGRADE
+====================== */
+function buyUpgrade(type) {
+    if (isPaused) return;
+
+    const up = upgrades[type];
+    if (cookies < up.cost) return;
+
+    cookies -= up.cost;
+    up.count++;
+    cps += up.cps;
+    up.cost = Math.floor(up.cost * 1.15);
+
+    updateDisplay();
+}
+
+/* ======================
+   PAUSE
+====================== */
+function togglePause() {
+    isPaused = !isPaused;
+    pauseMenu.style.display = isPaused ? 'flex' : 'none';
+    pauseBtn.innerHTML = isPaused ? '▶️ RESUME' : '⏸️ PAUSE';
+    updateDisplay();
+}
+
+/* ======================
+   SAVE / LOAD
+====================== */
+function getSaveData() {
+    return { cookies, cps, upgrades };
+}
+
+function saveGame() {
+    localStorage.setItem('macronClicker', JSON.stringify(getSaveData()));
+}
+
+function loadGame() {
+    const save = localStorage.getItem('macronClicker');
+    if (!save) return;
+    try {
+        const data = JSON.parse(save);
+        cookies = data.cookies || 0;
+        cps = data.cps || 0;
+        upgrades = data.upgrades || upgrades;
+    } catch {}
+}
+
+/* ======================
+   GAME LOOP
+====================== */
+setInterval(() => {
+    if (!isPaused) {
+        cookies += cps;
+        updateDisplay();
+    }
+}, 1000);
+
+/* ======================
+   INIT
+====================== */
+document.addEventListener('DOMContentLoaded', () => {
+    loadGame();
+    updateDisplay();
+
+    const cookie = document.getElementById('cookie');
+    cookie.addEventListener('click', clickCookie);
+    cookie.addEventListener('touchstart', e => {
+        e.preventDefault();
+        clickCookie();
+    });
+});
+</script>
+
+   
+
+</body>
+</html>
