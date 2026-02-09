@@ -85,6 +85,9 @@
     <!-- Bouton Pause -->
     <button id="pauseBtn" onclick="togglePause()">⏸️ PAUSE</button>
 
+
+
+
     <!-- Menu Pause -->
     <div id="pauseMenu">
         <h2 style="color: gold; font-size: 40px; margin-bottom: 30px;">MENU PAUSE</h2>
@@ -220,24 +223,36 @@ function togglePause() {
 /* ======================
    SAVE / LOAD
 ====================== */
-function getSaveData() {
-    return { cookies, cps, upgrades };
-}
-
 function saveGame() {
-    localStorage.setItem('macronClicker', JSON.stringify(getSaveData()));
+    localStorage.setItem(
+        "macronClicker",
+        JSON.stringify({
+            cookies,
+            cps,
+            upgrades
+        })
+    );
 }
 
 function loadGame() {
-    const save = localStorage.getItem('macronClicker');
+    const save = localStorage.getItem("macronClicker");
     if (!save) return;
+
     try {
         const data = JSON.parse(save);
-        cookies = data.cookies || 0;
-        cps = data.cps || 0;
-        upgrades = data.upgrades || upgrades;
-    } catch {}
+        cookies = data.cookies ?? 0;
+        cps = data.cps ?? 0;
+        upgrades = data.upgrades ?? upgrades;
+    } catch (e) {
+        console.log("Save corrompue");
+    }
 }
+
+function deleteSave() {
+    localStorage.removeItem("macronClicker");
+    location.reload();
+}
+
 
 /* ======================
    GAME LOOP
@@ -262,7 +277,10 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         clickCookie();
     });
-});
+});                       
+
+
+
 </script>
 
    
